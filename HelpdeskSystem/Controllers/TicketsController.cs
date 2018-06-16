@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -75,6 +76,7 @@ namespace HelpdeskSystem.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Ticket ticket = db.Tickets.Find(id);
+            //ticket.ModifiedDate = DateTime.Now;
             if (ticket == null)
             {
                 return HttpNotFound();
@@ -89,11 +91,14 @@ namespace HelpdeskSystem.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Subject,Content,CreatedDate,ModifiedDate,StatusId,ProfileId")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Subject,Content,StatusId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(ticket).State = EntityState.Modified;
+
+                //db.Entry(ticket).State = EntityState.Modified;
+                //db.Tickets.Where(t => t.Id = ticket.Id).Update;
+                //ticket.ModifiedDate = DateTime.Now;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

@@ -21,21 +21,6 @@ namespace HelpdeskSystem.Controllers
             return View(db.Statuses.ToList());
         }
 
-        // GET: Status/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Status status = db.Statuses.Find(id);
-            if (status == null)
-            {
-                return HttpNotFound();
-            }
-            return View(status);
-        }
-
         // GET: Status/Create
         public ActionResult Create()
         {
