@@ -1,0 +1,71 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+
+@{
+    ViewBag.Title = "Lista zgłoszeń";
+}
+
+<h2>Zgłoszenia</h2>
+
+<p>
+    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Subject)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProfileId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.StatusId)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Subject)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Profile.Username)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Szczegóły", "Details", new { id = item.Id })
+                @if (@User.Identity.IsAuthenticated)
+                {
+                    if (@User.IsInRole("Admin"))
+                    {
+                        <text> | </text>
+                        @Html.ActionLink("Edytuj", "Edit", new { id = item.Id })
+                        <text> | </text>
+                        @Html.ActionLink("Usuń", "Delete", new { id = item.Id })
+                    }
+                }
+            </td>
+        </tr>
+    }
+
+</table>
