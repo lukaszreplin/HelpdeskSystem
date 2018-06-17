@@ -30,8 +30,8 @@ namespace HelpdeskSystem.DataAccess
 
             var profiles = new List<Profile>
             {
-                new Profile { Username = "lukaszreplin@gmail.com", Firstname = "Adam", Lastname = "Kowalski", RegisteredDate = DateTime.Now},
-                new Profile { Username = "jannowak@gmail.com", Firstname = "Jan", Lastname = "Kowalski", RegisteredDate = DateTime.Now}
+                new Profile { Username = "admin@gmail.com", Firstname = "Adam", Lastname = "Kowalski", RegisteredDate = DateTime.Now},
+                new Profile { Username = "user@gmail.com", Firstname = "Jan", Lastname = "Kowalski", RegisteredDate = DateTime.Now}
 
             };
             var statuses = new List<Status>

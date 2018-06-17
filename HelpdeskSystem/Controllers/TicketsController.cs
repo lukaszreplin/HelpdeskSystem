@@ -16,9 +16,33 @@ namespace HelpdeskSystem.Controllers
         private HelpdeskContext db = new HelpdeskContext();
 
         // GET: Tickets
-        public ActionResult Index()
+        public ActionResult Index(string sortOrder, string searchString)
         {
-            var tickets = db.Tickets.Include(t => t.Profile).Include(t => t.Status);
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "BySubjectDescending" : "";
+            ViewBag.DateSortParm = sortOrder == "CreatedDate" ? "CreatedDateDescending" : "CreatedDate";
+            var tickets = from t in db.Tickets
+                          select t;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                tickets = tickets.Where(t => t.Subject.Contains(searchString)
+                                               || t.Content.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "BySubjectDescending":
+                    tickets = tickets.OrderByDescending(t => t.Subject);
+                    break;
+                case "CreatedDateDescending":
+                    tickets = tickets.OrderBy(t => t.CreatedDate);
+                    break;
+                case "CreatedDate":
+                    tickets = tickets.OrderByDescending(t => t.CreatedDate);
+                    break;
+                default:
+                    tickets = tickets.OrderBy(t => t.Id);
+                    break;
+            }
+            //tickets = db.Tickets.Include(t => t.Profile).Include(t => t.Status);
             return View(tickets.ToList());
         }
 

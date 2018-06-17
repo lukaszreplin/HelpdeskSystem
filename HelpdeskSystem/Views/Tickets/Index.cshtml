@@ -1,4 +1,5 @@
-﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+﻿@using System.Web.UI.WebControls
+@model IEnumerable<HelpdeskSystem.Models.Ticket>
 
 @{
     ViewBag.Title = "Lista zgłoszeń";
@@ -9,16 +10,25 @@
 <p>
     <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
 </p>
+@using (Html.BeginForm())
+{
+    <p>
+            <span>Wyszukaj zgłoszenie: @Html.TextBox("SearchString", null, new { @class="form-control", @placeholder="Temat lub treść...", @id="searchString"})
+                <input type="submit" class="btn btn-default" value="Szukaj"/>
+                <input type="submit" class="btn btn-default" value="Wyczyść" 
+                       onclick="javascript:document.getElementById('searchString').value = ''"/> </span>
+    </p>
+}
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Subject)
+            @Html.ActionLink("Temat", "Index", new { sortOrder = ViewBag.NameSortParm })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CreatedDate)
+            @Html.ActionLink("Data utworzenia", "Index", new { sortOrder = ViewBag.DateSortParm })
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ModifiedDate)
@@ -32,7 +42,8 @@
         <th></th>
     </tr>
 
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
