@@ -6,8 +6,16 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Razor;
+using System.Web.Razor.Parser;
 using HelpdeskSystem.DataAccess;
+using HelpdeskSystem.MailModels;
 using HelpdeskSystem.Models;
+using HelpdeskSystem.Utils;
+using PagedList;
+using RazorEngine;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 
 namespace HelpdeskSystem.Controllers
 {
@@ -16,10 +24,23 @@ namespace HelpdeskSystem.Controllers
         private HelpdeskContext db = new HelpdeskContext();
 
         // GET: Tickets
-        public ActionResult Index(string sortOrder, string searchString)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
         {
+            ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "BySubjectDescending" : "";
             ViewBag.DateSortParm = sortOrder == "CreatedDate" ? "CreatedDateDescending" : "CreatedDate";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
             var tickets = from t in db.Tickets
                           select t;
             if (!String.IsNullOrEmpty(searchString))
@@ -43,7 +64,9 @@ namespace HelpdeskSystem.Controllers
                     break;
             }
             //tickets = db.Tickets.Include(t => t.Profile).Include(t => t.Status);
-            return View(tickets.ToList());
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(tickets.ToPagedList(pageNumber, pageSize));
         }
 
         // GET: Tickets/Details/5
@@ -78,11 +101,31 @@ namespace HelpdeskSystem.Controllers
         {
             if (ModelState.IsValid)
             {
+                HttpPostedFileBase file = Request.Files["attachment"];
+                if (file != null && file.ContentLength > 0)
+                {
+                    ticket.Attachment = Guid.NewGuid() + file.FileName;
+                    file.SaveAs(HttpContext.Server.MapPath("~/Attachments/") + ticket.Attachment);
+                }
                 ticket.CreatedDate = DateTime.Now;
                 ticket.ModifiedDate = DateTime.Now;
                 ticket.ProfileId = db.Profiles.Single(p => p.Username == User.Identity.Name).Id;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
+                var model = new TicketAddedModel
+                {
+                    Firstname = db.Profiles.Single(p => p.Username == User.Identity.Name).Firstname,
+                    Lastname = db.Profiles.Single(p => p.Username == User.Identity.Name).Lastname
+                };
+
+                var templateManager = new ResolvePathTemplateManager(new[] { "~/Views/Mail/" });
+                var config = new TemplateServiceConfiguration
+                {
+                    TemplateManager = templateManager
+                };
+                Engine.Razor = RazorEngineService.Create(config);
+                var html = Engine.Razor.RunCompile("C:\\Users\\lreplin\\source\\repos\\HelpdeskSystem\\HelpdeskSystem\\Views\\Mail\\TicketAdded.cshtml", null, model);
+                Mailing.SendMail("lukaszreplin@gmail.com", "TEST", html);
                 return RedirectToAction("Index");
             }
 

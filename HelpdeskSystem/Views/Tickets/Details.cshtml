@@ -60,6 +60,14 @@
 
     </dl>
 </div>
+@if (Model.Attachment != null)
+{
+    <button data-toggle="collapse" data-target="#attachment">Pokaż / ukryj</button>
+
+    <div id="attachment" class="collapse">
+        <img src="~/Attachments/@Model.Attachment" alt="" height="100px" width="100px"/>
+    </div>
+}
 <p>
     @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Powrót do listy", "Index")

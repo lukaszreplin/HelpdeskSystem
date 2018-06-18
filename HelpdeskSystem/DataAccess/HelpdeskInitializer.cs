@@ -9,7 +9,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace HelpdeskSystem.DataAccess
 {
-    public class HelpdeskInitializer : DropCreateDatabaseIfModelChanges<HelpdeskContext>
+    public class HelpdeskInitializer : CreateDatabaseIfNotExists<HelpdeskContext>
     {
         protected override void Seed(HelpdeskContext context)
         {

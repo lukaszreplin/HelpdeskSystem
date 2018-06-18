@@ -1,5 +1,8 @@
-﻿@using System.Web.UI.WebControls
-@model IEnumerable<HelpdeskSystem.Models.Ticket>
+﻿@model PagedList.IPagedList<HelpdeskSystem.Models.Ticket>
+@using PagedList.Mvc;
+@using System.Web.UI.WebControls
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
 
 @{
     ViewBag.Title = "Lista zgłoszeń";
@@ -10,34 +13,36 @@
 <p>
     <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
 </p>
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Tickets", FormMethod.Get))
 {
     <p>
-            <span>Wyszukaj zgłoszenie: @Html.TextBox("SearchString", null, new { @class="form-control", @placeholder="Temat lub treść...", @id="searchString"})
-                <input type="submit" class="btn btn-default" value="Szukaj"/>
-                <input type="submit" class="btn btn-default" value="Wyczyść" 
-                       onclick="javascript:document.getElementById('searchString').value = ''"/> </span>
+        <span>
+            Wyszukaj zgłoszenie: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Temat lub treść...", @id = "searchString" })
+            <input type="submit" class="btn btn-default" value="Szukaj" />
+            <input type="submit" class="btn btn-default" value="Wyczyść"
+                   onclick="javascript:document.getElementById('searchString').value = ''" />
+        </span>
     </p>
 }
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Id)
         </th>
         <th>
-            @Html.ActionLink("Temat", "Index", new { sortOrder = ViewBag.NameSortParm })
+            @Html.ActionLink("Temat", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.ActionLink("Data utworzenia", "Index", new { sortOrder = ViewBag.DateSortParm })
+            @Html.ActionLink("Data utworzenia", "Index", new { sortOrder = ViewBag.DateSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ModifiedDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProfileId)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ProfileId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.StatusId)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().StatusId)
         </th>
         <th></th>
     </tr>
@@ -80,3 +85,8 @@
     }
 
 </table>
+<br />
+Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

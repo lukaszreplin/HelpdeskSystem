@@ -10,7 +10,7 @@ namespace HelpdeskSystem.DataAccess
     public class HelpdeskContext : DbContext
     {
         public HelpdeskContext()
-            : base("name=DefaultConnection")
+            : base("DefaultConnection")
         {
         }
 

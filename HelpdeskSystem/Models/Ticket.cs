@@ -23,6 +23,9 @@ namespace HelpdeskSystem.Models
         [DisplayName("Utworzył")]
         public int ProfileId { get; set; }
 
+        [DisplayName("Załącznik")]
+        public string Attachment { get; set; }
+
         public virtual Status Status { get; set; }
         public virtual Profile Profile { get; set; }
 
