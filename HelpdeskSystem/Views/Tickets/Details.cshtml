@@ -1,74 +1,78 @@
-﻿@model HelpdeskSystem.Models.Ticket
+﻿@using HelpdeskSystem.Models
+@model HelpdeskSystem.Models.Ticket
+
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h3>Zgłoszenie nr @Model.Id - szczegóły</h3>
 
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Profile.Username)
-        </dt>
+<h5><b>Dodane przez</b> @Model.Profile.Firstname @Model.Profile.Lastname - @Model.CreatedDate</h5>
 
-        <dd>
-            @Html.DisplayFor(model => model.Profile.Username)
-        </dd>
+<h4>
+    @if (@Model.Status.ClosingTicket)
+    {
+        <span class="label label-danger">@Model.Status.Name</span>
+    }
+    else
+    {
+        <span class="label label-success">@Model.Status.Name</span>
+    }
+</h4>
+<h3>Tytuł zgłoszenia: @Model.Subject</h3>
+<blockquote>
+    <h5>
+        <b>
+            Treść zgłoszenia:
+        </b>
+        <p>
+            @Model.Content
+        </p>
+    </h5>
+</blockquote>
+<h4>Dyskusja</h4>
+@if (@Model.Comments.Any())
+{
+<div class="panel panel-primary">
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="panel-heading">
+            <h6>
+                <b>
+                    @comment.Profile.Firstname
+                    @comment.Profile.Lastname
+                </b>
+                @comment.CreatedDate
+                
+            </h6>
+        </div>
+        <div class="panel-body"><p>@comment.Content</p></div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Status.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Status.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Subject)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Subject)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Content)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Content)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-
-    </dl>
+    }
 </div>
+}
+else
+{
+    <div class="panel panel-default">
+        <div class="panel-body"><p>Pusto</p></div>
+    </div>
+}
+    <button class="btn btn-primary" data-toggle="collapse" data-target="#commentForm">Dodaj komentarz</button>
+    @{ Html.RenderAction("Create", "Comment", new { ticketId = Model.Id }); }
+
 @if (Model.Attachment != null)
 {
     <button data-toggle="collapse" data-target="#attachment">Pokaż / ukryj</button>
 
     <div id="attachment" class="collapse">
-        <img src="~/Attachments/@Model.Attachment" alt="" height="100px" width="100px"/>
+        <img src="~/Attachments/@Model.Attachment" alt="" height="100px" width="100px" />
     </div>
 }
 <p>
     @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Powrót do listy", "Index")
 </p>
+
+
+

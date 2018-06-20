@@ -14,6 +14,7 @@ namespace HelpdeskSystem.Models
         public string Name { get; set; }
 
         [DefaultValue(false)]
+        [DisplayName("Zamyka zgłoszenie")]
         public bool ClosingTicket { get; set; }
 
         public virtual ICollection<Ticket> Tickets { get; set; }

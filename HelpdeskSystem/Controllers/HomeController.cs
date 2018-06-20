@@ -33,7 +33,6 @@ namespace HelpdeskSystem.Controllers
                                                     };
                 return View(data.ToList());
             }
-            return View();
         }
 
         public ActionResult Contact()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -69,6 +70,8 @@ namespace HelpdeskSystem.Controllers
             return View(tickets.ToPagedList(pageNumber, pageSize));
         }
 
+
+
         // GET: Tickets/Details/5
         public ActionResult Details(int? id)
         {
@@ -76,11 +79,15 @@ namespace HelpdeskSystem.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Ticket ticket = db.Tickets.Find(id);
+            ticket.Comments = db.Comments.Where(c => c.TicketId == ticket.Id).ToList();
+
             if (ticket == null)
             {
                 return HttpNotFound();
             }
+
             return View(ticket);
         }
 
@@ -118,7 +125,7 @@ namespace HelpdeskSystem.Controllers
                     Lastname = db.Profiles.Single(p => p.Username == User.Identity.Name).Lastname
                 };
 
-                var templateManager = new ResolvePathTemplateManager(new[] { "~/Views/Mail/" });
+                var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
                 var config = new TemplateServiceConfiguration
                 {
                     TemplateManager = templateManager

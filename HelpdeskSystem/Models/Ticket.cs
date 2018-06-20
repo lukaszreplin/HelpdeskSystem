@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
@@ -30,5 +31,10 @@ namespace HelpdeskSystem.Models
         public virtual Profile Profile { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
+
+        public Ticket()
+        {
+            Comments = new Collection<Comment>();
+        }
     }
 }

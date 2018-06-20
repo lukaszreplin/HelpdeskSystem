@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using HelpdeskSystem.DataAccess;
 using HelpdeskSystem.Models;
 
@@ -97,8 +99,17 @@ namespace HelpdeskSystem.Controllers
         {
             Status status = db.Statuses.Find(id);
             db.Statuses.Remove(status);
-            db.SaveChanges();
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                TempData["Error"] = "Wystąpił błąd przy usuwaniu statusu!";
+                TempData["ErrorDetails"] = ex.Message + ex.InnerException.Message;
+            }
             return RedirectToAction("Index");
+
         }
 
         protected override void Dispose(bool disposing)

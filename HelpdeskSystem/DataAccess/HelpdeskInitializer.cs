@@ -39,6 +39,7 @@ namespace HelpdeskSystem.DataAccess
                 new Status {Name = "Otwarte", ClosingTicket = false},
                 new Status {Name = "Zamknięte", ClosingTicket = true}
             };
+            statuses.ForEach(s => context.Statuses.Add(s));
             profiles.ForEach(p => context.Profiles.Add(p));
             context.SaveChanges();
         }

@@ -1,0 +1,17 @@
+﻿@model HelpdeskSystem.Models.Comment
+
+
+<div id="commentForm" class="collapse">
+    @using (Html.BeginForm("Create", "Comment", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label for="content">Treść odpowiedzi</label>
+            @Html.TextAreaFor(model => model.Content, new { @class = "form-control", @id = "content" })
+        </div>
+
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    }
+
+</div>
