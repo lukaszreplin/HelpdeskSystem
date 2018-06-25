@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
@@ -73,15 +74,22 @@ namespace HelpdeskSystem.Controllers
 
 
         // GET: Tickets/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, bool commentsDescending = false)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
+            ViewBag.CommentDescendind = commentsDescending;
+
             Ticket ticket = db.Tickets.Find(id);
-            ticket.Comments = db.Comments.Where(c => c.TicketId == ticket.Id).ToList();
+            if (commentsDescending)
+            {
+                var tmpComments = ticket.Comments.OrderByDescending(c => c.CreatedDate).ToList();
+                ticket.Comments = tmpComments;
+            }
+
 
             if (ticket == null)
             {
@@ -117,12 +125,17 @@ namespace HelpdeskSystem.Controllers
                 ticket.CreatedDate = DateTime.Now;
                 ticket.ModifiedDate = DateTime.Now;
                 ticket.ProfileId = db.Profiles.Single(p => p.Username == User.Identity.Name).Id;
+                ticket.StatusId = 1;
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 var model = new TicketAddedModel
                 {
                     Firstname = db.Profiles.Single(p => p.Username == User.Identity.Name).Firstname,
-                    Lastname = db.Profiles.Single(p => p.Username == User.Identity.Name).Lastname
+                    Number = ticket.Id,
+                    CreatedDate = ticket.CreatedDate,
+                    Status = db.Statuses.FirstOrDefault(s => s.Id == ticket.StatusId)?.Name,
+                    TicketUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/Tickets/Details/" + ticket.Id,
+                    SiteUrl = Request.Url.GetLeftPart(UriPartial.Authority)
                 };
 
                 var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });

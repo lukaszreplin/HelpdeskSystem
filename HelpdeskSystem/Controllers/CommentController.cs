@@ -22,14 +22,14 @@ namespace HelpdeskSystem.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Comment comment)
+        public ActionResult Create(int id, string content)
         {
-
-            comment.TicketId = comment.Id;
+            Comment comment = new Comment { TicketId = id, Content = content };
             comment.Id = 0;
             comment.CreatedDate = DateTime.Now;
             comment.ProfileId = db.Profiles.Single(p => p.Username == User.Identity.Name).Id;
-            db.Tickets.FirstOrDefault(t => t.Id == comment.TicketId).Comments.Add(comment);
+            //db.Tickets.FirstOrDefault(t => t.Id == comment.TicketId).Comments.Add(comment);
+            db.Comments.Add(comment);
             db.SaveChanges();
             return RedirectToAction("Details", "Tickets", new { id = comment.TicketId });
         }

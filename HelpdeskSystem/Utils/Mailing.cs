@@ -12,7 +12,7 @@ namespace HelpdeskSystem.Utils
     {
         public static void SendMail(string to, string subject, string body)
         {
-            var messsage = new System.Net.Mail.MailMessage(ConfigurationManager.AppSettings["sender"], to)
+            var messsage = new System.Net.Mail.MailMessage(new MailAddress(ConfigurationManager.AppSettings["senderAddress"], ConfigurationManager.AppSettings["sender"]), new MailAddress(to))
             {
                 Subject = subject,
                 Body = body,
@@ -24,7 +24,7 @@ namespace HelpdeskSystem.Utils
 
                 Host = ConfigurationManager.AppSettings["smtpHost"],
                 Credentials = new System.Net.NetworkCredential(
-                    ConfigurationManager.AppSettings["sender"],
+                    ConfigurationManager.AppSettings["senderAddress"],
                     ConfigurationManager.AppSettings["password"]),
                 EnableSsl = true
             };

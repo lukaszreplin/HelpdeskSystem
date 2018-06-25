@@ -10,7 +10,7 @@
             <label for="content">Treść odpowiedzi</label>
             @Html.TextAreaFor(model => model.Content, new { @class = "form-control", @id = "content" })
         </div>
-
+        @Html.HiddenFor(model => model.TicketId)
         <button type="submit" class="btn btn-primary">Zapisz</button>
     }
 

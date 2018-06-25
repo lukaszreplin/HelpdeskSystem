@@ -11,29 +11,28 @@
 <h5><b>Dodane przez</b> @Model.Profile.Firstname @Model.Profile.Lastname - @Model.CreatedDate</h5>
 
 <h4>
-    @if (@Model.Status.ClosingTicket)
-    {
-        <span class="label label-danger">@Model.Status.Name</span>
-    }
-    else
-    {
-        <span class="label label-success">@Model.Status.Name</span>
-    }
+        <span class="label @Model.Status.LabelStyle">@Model.Status.Name</span>
 </h4>
 <h3>Tytuł zgłoszenia: @Model.Subject</h3>
 <blockquote>
     <h5>
         <b>
             Treść zgłoszenia:
-        </b>
-        <p>
-            @Model.Content
-        </p>
+        </b>            
+    </h5>
+    <h5>
+        @Model.Content
     </h5>
 </blockquote>
-<h4>Dyskusja</h4>
+<h4>Dyskusja
+    @if (@Model.Comments.Any())
+    {
+        <img src="~/Resources/reverse.png" alt="Odwróć sortowanie" height="25" width="25"
+             onclick="location.href = '@Url.Action("Details", "Tickets", new {id = Model.Id, commentsDescending = !ViewBag.CommentDescendind})';return false;"/>
+    }</h4>
 @if (@Model.Comments.Any())
 {
+    
 <div class="panel panel-primary">
     @foreach (var comment in Model.Comments)
     {

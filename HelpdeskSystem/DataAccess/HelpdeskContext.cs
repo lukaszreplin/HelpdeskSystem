@@ -23,7 +23,12 @@ namespace HelpdeskSystem.DataAccess
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            //modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
+            modelBuilder.Entity<Ticket>()
+                .HasRequired(t => t.Profile)
+                .WithMany(p => p.Tickets)
+                .HasForeignKey(t => t.ProfileId)
+                .WillCascadeOnDelete(false);
         }
     }
 }

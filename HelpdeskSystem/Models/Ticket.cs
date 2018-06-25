@@ -23,18 +23,16 @@ namespace HelpdeskSystem.Models
         public int? StatusId { get; set; }
         [DisplayName("Utworzył")]
         public int ProfileId { get; set; }
-
+        [DisplayName("Obsługujący")]
+        public int? OperatorId { get; set; }
         [DisplayName("Załącznik")]
         public string Attachment { get; set; }
 
         public virtual Status Status { get; set; }
         public virtual Profile Profile { get; set; }
+        public virtual Profile Operator { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
 
-        public Ticket()
-        {
-            Comments = new Collection<Comment>();
-        }
     }
 }

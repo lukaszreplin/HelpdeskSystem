@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using HelpdeskSystem.Models;
+using HelpdeskSystem.Utils;
 
 namespace HelpdeskSystem.Controllers
 {
@@ -158,11 +159,13 @@ namespace HelpdeskSystem.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 UserManager.AddToRole(user.Id, "Client");
                 var context = new HelpdeskContext();
+                var translate = new RoleTranslate();
                 context.Profiles.Add(new Profile
                 {
                     Firstname = model.Firstname,
                     Lastname = model.Lastname,
                     RegisteredDate = DateTime.Now,
+                    RoleName = translate.GetValue(UserManager.GetRoles(user.Id).FirstOrDefault()),
                     Username = model.Email
                 });
                 context.SaveChanges();
@@ -224,7 +227,7 @@ namespace HelpdeskSystem.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
                 // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
                 // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
