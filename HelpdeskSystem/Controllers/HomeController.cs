@@ -5,8 +5,10 @@ using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+
 using HelpdeskSystem.DataAccess;
 using HelpdeskSystem.Models;
+using Newtonsoft.Json;
 
 namespace HelpdeskSystem.Controllers
 {
@@ -15,6 +17,8 @@ namespace HelpdeskSystem.Controllers
 
         public ActionResult Index()
         {
+            if (TempData["Logout"] != null && (bool)TempData["Logout"])
+                ViewBag.Logout = true;
             return View();
         }
 
@@ -41,6 +45,8 @@ namespace HelpdeskSystem.Controllers
 
             return View();
         }
+
+
 
         //protected override void Dispose(bool disposing)
         //{

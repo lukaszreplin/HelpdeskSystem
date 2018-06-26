@@ -13,14 +13,22 @@
 <p>
     <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
 </p>
+<p>
+    <div class="btn-group">
+        <button id="0" type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Tickets", new { status = 0})';return false;">Wszystkie</button>
+        <button id="1" type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Tickets", new { status = 1})';return false;">Nowe</button>
+        <button id="2" type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Tickets", new { status = 2})';return false;">Otwarte</button>
+        <button id="3" type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Tickets", new { status = 3})';return false;">Zamknięte</button>
+    </div>
+</p>
 @using (Html.BeginForm("Index", "Tickets", FormMethod.Get))
 {
     <p>
         <span>
-            Wyszukaj zgłoszenie: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control", @placeholder = "Temat lub treść...", @id = "searchString" })
-            <input type="submit" class="btn btn-default" value="Szukaj" />
+            Wyszukaj zgłoszenie: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new {@class = "form-control", @placeholder = "Temat lub treść...", @id = "searchString"})
+            <input type="submit" class="btn btn-default" value="Szukaj"/>
             <input type="submit" class="btn btn-default" value="Wyczyść"
-                   onclick="javascript:document.getElementById('searchString').value = ''" />
+                   onclick="javascript:document.getElementById('searchString').value = ''"/>
         </span>
     </p>
 }
@@ -40,6 +48,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstOrDefault().ProfileId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().OperatorId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FirstOrDefault().StatusId)
@@ -64,6 +75,16 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Profile.Username)
+            </td>
+            <td>
+                @if (item.OperatorId != null)
+                {
+                    @Html.DisplayFor(modelItem => item.Operator.Username)
+                }
+                else
+                {
+                    <text>Nie przydzielono</text>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Status.Name)

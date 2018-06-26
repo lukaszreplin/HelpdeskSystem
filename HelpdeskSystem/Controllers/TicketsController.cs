@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -26,8 +27,9 @@ namespace HelpdeskSystem.Controllers
         private HelpdeskContext db = new HelpdeskContext();
 
         // GET: Tickets
-        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, int status = 0)
         {
+            ViewBag.Status = status;
             ViewBag.CurrentSort = sortOrder;
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "BySubjectDescending" : "";
             ViewBag.DateSortParm = sortOrder == "CreatedDate" ? "CreatedDateDescending" : "CreatedDate";
@@ -42,9 +44,25 @@ namespace HelpdeskSystem.Controllers
             }
 
             ViewBag.CurrentFilter = searchString;
-
             var tickets = from t in db.Tickets
+                          where t.ProfileId == db.Profiles.FirstOrDefault(p => p.Username == User.Identity.Name).Id
                           select t;
+            if (User.IsInRole("Admin"))
+            {
+                tickets = from t in db.Tickets
+                          select t;
+            }
+            if (User.IsInRole("Staff"))
+            {
+                tickets = from t in db.Tickets
+                          where t.OperatorId == db.Profiles.FirstOrDefault(p => p.Username == User.Identity.Name).Id || t.OperatorId == null
+                          select t;
+            }
+
+            if (status != 0)
+            {
+                tickets = tickets.Where(t => t.StatusId == status);
+            }
             if (!String.IsNullOrEmpty(searchString))
             {
                 tickets = tickets.Where(t => t.Subject.Contains(searchString)
@@ -66,7 +84,7 @@ namespace HelpdeskSystem.Controllers
                     break;
             }
             //tickets = db.Tickets.Include(t => t.Profile).Include(t => t.Status);
-            int pageSize = 3;
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
             return View(tickets.ToPagedList(pageNumber, pageSize));
         }
@@ -107,6 +125,7 @@ namespace HelpdeskSystem.Controllers
             return View();
         }
 
+
         // POST: Tickets/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
@@ -138,13 +157,15 @@ namespace HelpdeskSystem.Controllers
                     SiteUrl = Request.Url.GetLeftPart(UriPartial.Authority)
                 };
 
+                IRazorEngineService service = Engine.Razor;
+                var ppp = HttpContext.Server.MapPath("~/Views/Mail/TicketAdded.cshtml");
                 var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
                 var config = new TemplateServiceConfiguration
                 {
                     TemplateManager = templateManager
                 };
                 Engine.Razor = RazorEngineService.Create(config);
-                var html = Engine.Razor.RunCompile("C:\\Users\\lreplin\\source\\repos\\HelpdeskSystem\\HelpdeskSystem\\Views\\Mail\\TicketAdded.cshtml", null, model);
+                var html = Engine.Razor.RunCompile(ppp, null, model);
                 Mailing.SendMail("lukaszreplin@gmail.com", "TEST", html);
                 return RedirectToAction("Index");
             }
@@ -168,6 +189,7 @@ namespace HelpdeskSystem.Controllers
             }
             ViewBag.ProfileId = new SelectList(db.Profiles, "Id", "Username", ticket.ProfileId);
             ViewBag.StatusId = new SelectList(db.Statuses, "Id", "Name", ticket.StatusId);
+            ViewBag.OperatorId = new SelectList(db.Profiles, "Id", "Username", ticket.OperatorId);
             return View(ticket);
         }
 
@@ -176,7 +198,7 @@ namespace HelpdeskSystem.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Subject,Content,CreatedDate,ModifiedDate,StatusId,ProfileId")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Subject,Content,CreatedDate,ModifiedDate,StatusId,ProfileId,OperatorId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -215,6 +237,37 @@ namespace HelpdeskSystem.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
+        public ActionResult Close(int id)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
+            ticket.StatusId = 3;
+            ticket.ModifiedDate = DateTime.Now;
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        public ActionResult Open(int id)
+        {
+            var ticket = db.Tickets.FirstOrDefault(t => t.Id == id);
+            ticket.StatusId = 2;
+            ticket.ModifiedDate = DateTime.Now;
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        public ActionResult Support(int id)
+        {
+            var ticket = db.Tickets.First(t => t.Id == id);
+            ticket.OperatorId = db.Profiles.Single(p => p.Username == User.Identity.Name).Id;
+            ticket.StatusId = 2;
+            ticket.ModifiedDate = DateTime.Now;
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = id });
+        }
+
+
 
         protected override void Dispose(bool disposing)
         {

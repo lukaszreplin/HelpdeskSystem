@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using HelpdeskSystem.DataAccess;
 using HelpdeskSystem.MailModels;
 using HelpdeskSystem.Models;
@@ -164,6 +165,26 @@ namespace HelpdeskSystem.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Profile profile = db.Profiles.Find(id);
+            var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var user = userManager.FindByName(profile.Username);
+            var logins = user.Logins;
+            var rolesForUser = userManager.GetRoles(user.Id);
+            foreach (var login in logins.ToList())
+            {
+                userManager.RemoveLogin(login.UserId, new UserLoginInfo(login.LoginProvider, login.ProviderKey));
+
+            }
+
+            if (rolesForUser.Any())
+            {
+                foreach (var item in rolesForUser.ToList())
+                {
+                    // item should be the name of the role
+                    var result = userManager.RemoveFromRole(user.Id, item);
+                }
+            }
+
+            userManager.Delete(user);
             db.Profiles.Remove(profile);
             db.SaveChanges();
             return RedirectToAction("Index");

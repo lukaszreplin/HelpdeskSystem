@@ -19,9 +19,9 @@
                 <h4 class="modal-title">BŁĄD</h4>
             </div>
             <div class="alert alert-danger">
-                @TempData["Error"] <button class="btn btn-danger"  data-toggle="collapse" data-target="#demo">Więcej</button>
+                @TempData["Error"] <button class="btn btn-danger"  data-toggle="collapse" data-target="#content">Więcej</button>
             </div>
-            <div id="demo" class="collapse">
+            <div id="content" class="collapse">
                 @TempData["ErrorDetails"]
             </div>
             <div class="modal-footer">
@@ -57,7 +57,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Użytkownicy", "Index", "Profiles")</li>
-                            <li><a href="#">Użytkownicy</a></li>
+                            <li><a href="#">Raporty</a></li>
                             <li><a href="#">Ustawienia</a></li>
                         </ul>
                     </li>
@@ -80,6 +80,11 @@
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/bootstrap")
 @RenderSection("scripts", required: false)
+<script>
+    $(document).ready(function() {
+        document.getElementById(@ViewBag.Status).classList.add('active');
+    });
+</script>
 @if (TempData["Error"] != null)
 {
     <script>

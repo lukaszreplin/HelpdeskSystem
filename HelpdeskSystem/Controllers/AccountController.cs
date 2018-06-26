@@ -408,6 +408,7 @@ namespace HelpdeskSystem.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            TempData["Logout"] = true;
             return RedirectToAction("Index", "Home");
         }
 
