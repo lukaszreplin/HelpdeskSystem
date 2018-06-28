@@ -2,7 +2,30 @@
 @{
     ViewBag.Title = "O programie";
 }
-<h2>@ViewBag.Title.</h2>
+<h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
-
+@{
+    var count = Int32.Parse(Html.Action("GetCount", "Tickets").ToString());
+} 
+<p>
+    Strona powstała jako projekt z przedmiotu Programowanie Zaawansowane.
+    Służy ona do rejestrowania zgłoszeń oraz ich obsługi. Do tej pory udało się zarejestrować
+    @count
+    @if (count == 1)
+    {
+        <text>zgłoszenie.</text>
+    }
+    else if (count % 10 == 1)
+    {
+        <text>zgłoszeń.</text>
+    }
+    @if (count % 10 > 1 && count % 10 < 5)
+    {
+        <text>zgłoszenia.</text>
+    }
+    @if (count % 10 > 4)
+    {
+        <text>zgłoszeń.</text>
+    }
+</p>
 

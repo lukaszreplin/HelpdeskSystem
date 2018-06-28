@@ -8,6 +8,7 @@ using HelpdeskSystem.Models;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize(Roles = "Client")]
     public class ClientStatisticsController : Controller
     {
         HelpdeskContext db = new HelpdeskContext();

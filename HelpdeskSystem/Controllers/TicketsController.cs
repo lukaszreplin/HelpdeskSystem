@@ -22,6 +22,7 @@ using RazorEngine.Templating;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize]
     public class TicketsController : Controller
     {
         private HelpdeskContext db = new HelpdeskContext();
@@ -166,7 +167,7 @@ namespace HelpdeskSystem.Controllers
                 };
                 Engine.Razor = RazorEngineService.Create(config);
                 var html = Engine.Razor.RunCompile(path, null, model);
-                Mailing.SendMail(ticket.Profile.Username, "TEST", html);
+                Mailing.SendMail(ticket.Profile.Username, "Potwierdzenie przyjęcia zgłoszenia", html);
                 return RedirectToAction("Index");
             }
 
@@ -285,6 +286,12 @@ namespace HelpdeskSystem.Controllers
             return RedirectToAction("Details", new { id = id });
         }
 
+        [AllowAnonymous]
+        public ContentResult GetCount()
+        {
+            var count = db.Tickets.Count();
+            return Content(count.ToString());
+        }
 
 
         protected override void Dispose(bool disposing)

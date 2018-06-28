@@ -8,9 +8,10 @@ using HelpdeskSystem.Models;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class SettingsController : Controller
     {
-        [Authorize]
+
         public ActionResult Index()
         {
             SettingsViewModel settingsViewModel = new SettingsViewModel
@@ -23,7 +24,7 @@ namespace HelpdeskSystem.Controllers
             return View(settingsViewModel);
         }
 
-        [Authorize]
+
         [HttpPost]
         public ActionResult Index(SettingsViewModel model)
         {

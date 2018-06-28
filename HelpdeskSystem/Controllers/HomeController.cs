@@ -24,15 +24,14 @@ namespace HelpdeskSystem.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "O aplikacji.";
-
+            ViewBag.Message = "O aplikacji";
             return View();
 
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Strona kontaktowa.";
+            ViewBag.Message = "Informacje kontaktowe";
 
             return View();
         }

@@ -15,6 +15,7 @@ using IronPdf;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ReportsController : Controller
     {
         HelpdeskContext db = new HelpdeskContext();

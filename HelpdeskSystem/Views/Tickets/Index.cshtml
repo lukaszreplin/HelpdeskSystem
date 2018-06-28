@@ -9,10 +9,12 @@
 }
 
 <h2>Zgłoszenia</h2>
-
-<p>
-    <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
-</p>
+@if (User.IsInRole("Admin") || User.IsInRole("Client"))
+{
+    <p>
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Tickets")';return false;">Dodaj nowe zgłoszenie</button>
+    </p>
+}
 <p>
     <div class="btn-group">
         <button id="0" type="button" class="btn btn-default" onclick="location.href='@Url.Action("Index", "Tickets", new { status = 0})';return false;">Wszystkie</button>

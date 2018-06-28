@@ -22,6 +22,7 @@ using RazorEngine.Templating;
 
 namespace HelpdeskSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProfilesController : Controller
     {
         private HelpdeskContext db = new HelpdeskContext();
@@ -199,6 +200,7 @@ namespace HelpdeskSystem.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize]
         public ContentResult GetFirstnameAndLastname(string email)
         {
             var profile = db.Profiles.FirstOrDefault(p => p.Username == email);

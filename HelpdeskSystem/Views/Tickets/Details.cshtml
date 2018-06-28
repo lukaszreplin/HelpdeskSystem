@@ -24,24 +24,28 @@
 <h4>
     <span class="label @Model.Status.LabelStyle">@Model.Status.Name</span>
 </h4>
-@switch (Model.StatusId)
+@if (User.IsInRole("Staff") || User.IsInRole("Admin"))
 {
-    case 1:
-        <p>
-            @Html.ActionLink("Obsługuj", "Support", new { id = Model.Id }, new { @class = "btn btn-default" })
-        </p>
-        break;
-    case 2:
-        <p>
-            @Html.ActionLink("Zamknij", "Close", new { id = Model.Id }, new { @class = "btn btn-default" })
-        </p>
-        break;
-    case 3:
-        <p>
-            @Html.ActionLink("Otwórz ponownie", "Open", new { id = Model.Id }, new { @class = "btn btn-default" })
-        </p>
-        break;
+    switch (Model.StatusId)
+     {
+         case 1:
+             <p>
+                 @Html.ActionLink("Obsługuj", "Support", new { id = Model.Id }, new { @class = "btn btn-default" })
+             </p>
+             break;
+         case 2:
+             <p>
+                 @Html.ActionLink("Zamknij", "Close", new { id = Model.Id }, new { @class = "btn btn-default" })
+             </p>
+             break;
+         case 3:
+             <p>
+                 @Html.ActionLink("Otwórz ponownie", "Open", new { id = Model.Id }, new { @class = "btn btn-default" })
+             </p>
+             break;
+     }
 }
+
 
 <h3>Tytuł zgłoszenia: @Model.Subject</h3>
 <blockquote>
