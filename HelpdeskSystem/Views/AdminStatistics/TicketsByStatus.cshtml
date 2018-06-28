@@ -1,0 +1,31 @@
+﻿@model List<HelpdeskSystem.Models.TicketsByStatusViewModel>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th colspan="2" style="text-align: center; background-color:lightgrey">
+                Liczba zgłoszeń wg statusu
+            </th>
+        </tr>
+        <tr>
+            <th>
+                Status
+            </th>
+            <th>
+                Liczba zgłoszeń
+            </th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @item.Count
+            </td>
+        </tr>
+    }
+</table>

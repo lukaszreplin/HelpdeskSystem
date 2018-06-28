@@ -1,0 +1,149 @@
+﻿@model HelpdeskSystem.Models.ReportsModels.MonthViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <style>
+        #report {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #report td, #report th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #report tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #report tr:hover {
+                background-color: #ddd;
+            }
+
+            #report th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #ff4500;
+                color: white;
+            }
+    </style>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+</head>
+<body>
+<h2>Raport miesięczny za miesiąc: @Model.MonthName</h2>
+<table id="report">
+    <thead>
+    <tr>
+        <th colspan="5">
+            Liczba zgłoszeń w podziale na operatorów
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Imię
+        </th>
+        <th>
+            Nazwisko
+        </th>
+        <th>
+            Liczba zgłoszeń
+        </th>
+    </tr>
+    </thead>
+
+    @foreach (var item in Model.TicketsByOperator)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Firstname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lastname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+        </tr>
+    }
+</table>
+<br/>
+<table id="report">
+    <thead>
+    <tr>
+        <th colspan="5">
+            Liczba zgłoszeń w podziale na statusy
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Status
+        </th>
+        <th>
+            Liczba zgłoszeń
+        </th>
+    </tr>
+    </thead>
+
+    @foreach (var item in Model.TicketsByStatus)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Count)
+            </td>
+        </tr>
+    }
+</table>
+<br/>
+<table id="report">
+    <thead>
+    <tr>
+        <th>
+            Nowe zgłoszenia
+        </th>
+        <th>
+            @Model.CreatedTickets
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Zamknięte zgłoszenia
+        </th>
+        <th>
+            @Model.ClosedTickets
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Dodane komentarze
+        </th>
+        <th>
+            @Model.AddedComments
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Nowi klienci
+        </th>
+        <th>
+            @Model.NewClients
+        </th>
+    </tr>
+    </thead>
+
+</table>
+<h5>Najwięcej zgłoszeń założył @Model.FirstnameClientWithMostTickets 
+    @Model.LastnameClientWithMostTickets, liczba zgłoszeń - @Model.TicketsOfClientWithMostTickets.</h5>
+</body>
+</html>

@@ -1,0 +1,114 @@
+﻿@model HelpdeskSystem.Models.StaffBasicStatisticsViewModel
+
+<div class="alert alert-info">
+    @if (Model.Available == 0)
+    {
+        <text>
+            Nie ma żadnych nowych zgłoszeń do obsługi. 
+        </text>
+        if (Model.Operated > 0)
+         {
+             <text>Lepiej dokończ obsługę już otwartych...</text>
+         }
+         else
+         {
+             <text>Możesz się wylogować.</text>
+        }
+    }
+    else
+    {
+        <text>
+            @if (@Model.Available > 1 && @Model.Available < 5)
+            {
+                <text>Dostępne są</text>
+            }
+            else if (@Model.Available == 1)
+            {
+                <text>Dostępne jest</text>
+            }
+            else
+            {
+                <text>Dostępnych jest</text>
+            }
+            <strong>@Model.Available</strong>
+            @if (@Model.Available > 1 && @Model.Available < 5)
+            {
+                <text>zgłoszenia</text>
+            }
+            else if (@Model.Available == 1)
+            {
+                <text>zgłoszenie</text>
+            }
+            else
+            {
+                <text>zgłoszeń</text>
+            }
+            do obsłużenia! Przejdź do
+            @(Html.ActionLink("zgłoszeń", "Index", "Tickets", new { status = 1}, null)), 
+            aby rozpocząć obsługę jednego z nich.
+        </text>
+    }
+    
+</div>
+<div class="alert alert-warning">
+    @if (Model.Operated == 0)
+    {
+        <text>Nie masz żadnych niezamkniętych zgłoszeń!</text>
+    }
+    else
+    {
+        <text>
+            Wciąż
+            @if (@Model.Operated > 1 && @Model.Operated < 5)
+            {
+                <text>pozostają</text>
+            }
+            else
+            {
+                <text>pozostaje</text>
+            }
+            <strong>@Model.Operated</strong>
+            @if (@Model.Operated > 1 && @Model.Operated < 5)
+            {
+                <text>zgłoszenia obsługiwane przez Ciebie i nie zamknięte. Nie zapomnij ich obsłużyć!</text>
+            }
+            else if (@Model.Operated == 1)
+            {
+                <text>zgłoszenie obsługiwane przez Ciebie i nie zamknięte. Nie zapomnij go obsłużyć!</text>
+            }
+            else
+            {
+                <text>zgłoszeń obsługiwanych przez Ciebie i nie zamkniętych. Nie zapomnij ich obsłużyć!</text>
+            }
+
+        </text>
+    }
+
+</div>
+<div class="alert alert-success">
+    @if (Model.Closed == 0)
+    {
+        <text>Nie zamknąłeś jeszcze żadnych zgłoszeń, musisz się bardziej postarać...</text>
+    }
+    else
+    {
+        <text>
+            Zamknąłeś już <strong>@Model.Closed</strong>
+            @if (@Model.Closed > 1 && @Model.Closed < 5)
+            {
+                <text>zgłoszenia</text>
+            }
+            else if (@Model.Closed == 1)
+            {
+                <text>zgłoszenie</text>
+            }
+            else
+            {
+                <text>zgłoszeń</text>
+            }
+            ! Gratulujemy!
+        </text>
+    }
+    
+</div>
+

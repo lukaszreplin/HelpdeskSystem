@@ -1,0 +1,67 @@
+﻿@model HelpdeskSystem.Models.MyTicketsViewModel
+
+@if (Model.AllTicketClosed)
+{
+    <text>
+        <div class="alert alert-success">
+            Wszystkie Twoje zgłoszenia zostały obsłużone!
+        </div>
+    </text>
+}
+else
+{
+    <text>
+        <div class="alert alert-info">
+            W obsłudze 
+            @if (Model.OpenTicketCount > 1 && Model.OpenTicketCount < 5)
+            {
+                <text>pozostają</text>
+            }
+            else
+            {
+                <text>pozostaje</text>
+            } 
+            <strong>@Model.OpenTicketCount</strong>  
+            @if (@Model.OpenTicketCount == 1)
+            {
+                <text>Twoje zgłoszenie.</text>
+            }
+            else if (Model.OpenTicketCount > 1 && Model.OpenTicketCount < 5)
+            {
+                <text>Twoje zgłoszenia.</text>
+            }
+            else
+            {
+                <text>Twoich zgłoszeń.</text>
+            }
+        </div>
+        <div class="alert alert-warning">
+            Nie rozpoczęto obsługi 
+            <strong>@Model.NewTicketCount</strong>  
+            @if (@Model.NewTicketCount == 1)
+            {
+                <text>Twojego zgłoszenia.</text>
+            }
+            else
+            {
+                <text>Twoich zgłoszeń.</text>
+            }
+        </div>
+    </text>
+}
+<div class="alert alert-info">
+    Do tej pory zamknięto
+    <strong>@Model.ClosedTicketCount</strong>  
+    @if (@Model.ClosedTicketCount == 1)
+    {
+        <text>zgłoszenie założone przez Ciebie.</text>
+    }
+    else if (Model.ClosedTicketCount > 1 && Model.ClosedTicketCount < 5)
+    {
+        <text>zgłoszenia założone przez Ciebie.</text>
+    }
+    else
+    {
+        <text>zgłoszeń założonych przez Ciebie.</text>
+    }
+</div>

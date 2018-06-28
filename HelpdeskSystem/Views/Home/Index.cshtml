@@ -1,25 +1,51 @@
-﻿@{
+﻿@model HelpdeskSystem.Models.HomeViewModel
+@{
     ViewBag.Title = "Strona główna";
 
 }
+<br />
 @if (User.Identity.IsAuthenticated)
 {
-    <div class="row">
-        
-    </div>
+    if (User.IsInRole("Admin"))
+    {
+        <div class="row">
+            <div class="col-md-4">
+                @{ Html.RenderAction("TicketsByDate", "AdminStatistics"); }
+            </div>
+            <div class="col-md-4">
+                @{ Html.RenderAction("TicketsBySupport", "AdminStatistics"); }
+            </div>
+            <div class="col-md-4">
+                @{ Html.RenderAction("TicketsByStatus", "AdminStatistics"); }
+            </div>
+        </div>
+    }
+    if (User.IsInRole("Staff"))
+    {
+        <div class="row">
+            @{ Html.RenderAction("StaffBasicStatistics", "StaffStatistics");}
+        </div>
+    }
+    if (User.IsInRole("Client"))
+    {
+        <div class="row">
+            @{ Html.RenderAction("MyTickets", "ClientStatistics");}
+        </div>
+    }
+
 }
 else
 {
-    <br/>
+    <br />
     if (ViewBag.Logout != null && ViewBag.Logout == true)
-     {
-         <div class="panel panel-success">
-             <div class="panel-heading">Informacja</div>
-             <div class="panel-body">
-                 Zostałeś wylogowany/a poprawnie. Aby rozpocząć ponownie 
-                 @Html.ActionLink("przejdź na stronę logowania.", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
-             </div>
-         </div>
+    {
+        <div class="panel panel-success">
+            <div class="panel-heading">Informacja</div>
+            <div class="panel-body">
+                Zostałeś wylogowany/a poprawnie. Aby rozpocząć ponownie
+                @Html.ActionLink("przejdź na stronę logowania.", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+            </div>
+        </div>
     }
     else
     {

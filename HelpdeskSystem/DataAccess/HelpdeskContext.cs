@@ -19,6 +19,7 @@ namespace HelpdeskSystem.DataAccess
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -28,6 +29,11 @@ namespace HelpdeskSystem.DataAccess
                 .HasRequired(t => t.Profile)
                 .WithMany(p => p.Tickets)
                 .HasForeignKey(t => t.ProfileId)
+                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<Ticket>()
+                .HasOptional(t => t.Operator)
+                .WithMany(o => o.OperatedTickets)
+                .HasForeignKey(t => t.OperatorId)
                 .WillCascadeOnDelete(false);
         }
     }

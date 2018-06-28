@@ -14,13 +14,12 @@ namespace HelpdeskSystem.DataAccess
     {
         protected override void Seed(HelpdeskContext context)
         {
-            RoleTranslate translate = new RoleTranslate();
             var roleManager = new RoleManager<IdentityRole>(
                 new RoleStore<IdentityRole>(new ApplicationDbContext()));
             var userManager = new UserManager<ApplicationUser>(
                 new UserStore<ApplicationUser>(new ApplicationDbContext()));
-            var user1 = new ApplicationUser { UserName = "admin@gmail.com" };
-            var user2 = new ApplicationUser { UserName = "user@gmail.com" };
+            var user1 = new ApplicationUser { UserName = "admin@gmail.com", Email = "admin@gmail.com" };
+            var user2 = new ApplicationUser { UserName = "user@gmail.com", Email = "user@gmail.com" };
             userManager.Create(user1, "Admin@123");
             userManager.Create(user2, "User@123");
             roleManager.Create(new IdentityRole("Admin"));
@@ -29,7 +28,14 @@ namespace HelpdeskSystem.DataAccess
 
             userManager.AddToRole(user1.Id, "Admin");
             userManager.AddToRole(user2.Id, "Staff");
-
+            var roles = new List<Role>
+            {
+                new Role { Name = "Admin", PolishName = "Admin"},
+                new Role { Name = "Staff", PolishName = "Obsługa"},
+                new Role { Name = "Client", PolishName = "Klient"}
+            };
+            roles.ForEach(r => context.Roles.Add(r));
+            context.SaveChanges();
             var profiles = new List<Profile>
             {
                 new Profile
@@ -37,7 +43,7 @@ namespace HelpdeskSystem.DataAccess
                     Username = "admin@gmail.com",
                     Firstname = "Adam",
                     Lastname = "Kowalski",
-                    RoleName = translate.GetValue(userManager.GetRoles(user1.Id).FirstOrDefault()),
+                    RoleId = 1,
                     RegisteredDate = DateTime.Now
                 },
                 new Profile
@@ -45,7 +51,7 @@ namespace HelpdeskSystem.DataAccess
                     Username = "user@gmail.com",
                     Firstname = "Jan",
                     Lastname = "Kowalski",
-                    RoleName = translate.GetValue(userManager.GetRoles(user2.Id).FirstOrDefault()),
+                    RoleId = 2,
                     RegisteredDate = DateTime.Now
                 }
 

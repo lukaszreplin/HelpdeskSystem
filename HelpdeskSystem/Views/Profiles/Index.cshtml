@@ -24,7 +24,7 @@
             @Html.DisplayNameFor(model => model.RegisteredDate)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.RoleName)
+            @Html.DisplayNameFor(model => model.RoleId)
         </th>
         <th></th>
     </tr>
@@ -44,7 +44,7 @@
             @Html.DisplayFor(modelItem => item.RegisteredDate)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.RoleName)
+            @Html.DisplayFor(modelItem => item.Role.PolishName)
         </td>
         <td>
             @Html.ActionLink("Edytuj", "Edit", new { id = item.Id }) |

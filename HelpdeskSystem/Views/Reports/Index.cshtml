@@ -1,0 +1,54 @@
+﻿@model HelpdeskSystem.Models.ReportsViewModel
+
+@{
+    ViewBag.Title = "Raporty";
+}
+<br />
+<div class="panel panel-default">
+    <div class="panel-heading">Dostępne raporty</div>
+    <div class="panel-body">
+        <h4>
+            @foreach (var item in Model.Reports)
+            {
+                @item.Value <button id="@item.Key" class="btn btn-default">Pobierz</button>
+                if (Model.Reports.IndexOf(item) != Model.Reports.Count - 1)
+                {
+                    <br /><br />
+                }
+
+            }
+        </h4>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-md-2 col-md-offset-5">
+        @using (Html.BeginForm("TopOper", "Reports", FormMethod.Post))
+        {
+            <input type="hidden" name="report" id="html" value="test" />
+            <input class="btn btn-success" type="submit" id="btnSubmit" value="Zapisz do PDF" style="visibility: hidden" />
+        }
+    </div>
+</div>
+<br /><hr /><br />
+<div id="report"></div>
+@Scripts.Render("~/bundles/jquery")
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#TopOper').click(function () {
+            $('#report').load('@Url.Action("TopOper", "Reports")');
+            document.getElementById('btnSubmit').style.visibility = "visible";
+        });
+        $('#Month').click(function () {
+            $('#report').load('@Url.Action("Month", "Reports")');
+            document.getElementById('btnSubmit').style.visibility = "visible";
+        });
+    });
+    $(function () {
+        $("#btnSubmit").click(function () {
+            $('#html').val($("#report").html());
+            console.log($('#html').val());
+        });
+    });
+
+</script>

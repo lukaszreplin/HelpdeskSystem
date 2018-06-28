@@ -64,19 +64,18 @@ namespace HelpdeskSystem.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Username,Firstname,Lastname,RoleName")] Profile profile)
+        public async Task<ActionResult> Create([Bind(Include = "Username,Firstname,Lastname,RoleId")] Profile profile)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    RoleTranslate translate = new RoleTranslate();
                     var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
                     var user = new ApplicationUser { Email = profile.Username, UserName = profile.Username };
                     var result = userManager.Create(user);
                     if (result.Succeeded)
                     {
-                        userManager.AddToRole(user.Id, translate.GetValue(profile.RoleName));
+                        userManager.AddToRole(user.Id, "Client");
                         profile.RegisteredDate = DateTime.Now;
                         db.Profiles.Add(profile);
                         db.SaveChanges();
@@ -84,22 +83,20 @@ namespace HelpdeskSystem.Controllers
                         string code = await userManager.GeneratePasswordResetTokenAsync(user.Id);
                         var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code },
                             protocol: Request.Url.Scheme);
-                        var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
-                        var config = new TemplateServiceConfiguration
-                        {
-                            TemplateManager = templateManager
-                        };
                         var model = new AccountCreatedViewModel
                         {
                             Firstname = profile.Firstname,
                             SiteUrl = Request.Url.GetLeftPart(UriPartial.Authority),
                             CallbackUrl = callbackUrl
-                        }
-                            ;
+                        };
+                        var path = HttpContext.Server.MapPath("~/Views/Mail/SetPassword.cshtml");
+                        var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
+                        var config = new TemplateServiceConfiguration
+                        {
+                            TemplateManager = templateManager
+                        };
                         Engine.Razor = RazorEngineService.Create(config);
-                        var html = Engine.Razor.RunCompile(
-                            "C:\\Users\\lreplin\\source\\repos\\HelpdeskSystem\\HelpdeskSystem\\Views\\Mail\\SetPassword.cshtml",
-                            null, model);
+                        var html = Engine.Razor.RunCompile(path, null, model);
                         Mailing.SendMail(profile.Username, "Nowe konto w systemie", html);
                     }
                 }
@@ -121,6 +118,7 @@ namespace HelpdeskSystem.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Profile profile = db.Profiles.Find(id);
+            ViewBag.RoleId = new SelectList(db.Roles, "Id", "PolishName", profile.RoleId);
             if (profile == null)
             {
                 return HttpNotFound();
@@ -133,10 +131,21 @@ namespace HelpdeskSystem.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Username,Firstname,Lastname,RegisteredDate")] Profile profile)
+        public ActionResult Edit([Bind(Include = "Id,Username,Firstname,Lastname,RegisteredDate,RoleId")] Profile profile)
         {
             if (ModelState.IsValid)
             {
+                var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var user = userManager.FindByName(profile.Username);
+                var rolesForUser = userManager.GetRoles(user.Id);
+                if (rolesForUser.Any())
+                {
+                    foreach (var item in rolesForUser.ToList())
+                    {
+                        var result = userManager.RemoveFromRole(user.Id, item);
+                    }
+                }
+                userManager.AddToRole(user.Id, db.Roles.Find(profile.RoleId).Name);
                 db.Entry(profile).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

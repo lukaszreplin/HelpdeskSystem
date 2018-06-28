@@ -158,15 +158,15 @@ namespace HelpdeskSystem.Controllers
                 };
 
                 IRazorEngineService service = Engine.Razor;
-                var ppp = HttpContext.Server.MapPath("~/Views/Mail/TicketAdded.cshtml");
+                var path = HttpContext.Server.MapPath("~/Views/Mail/TicketAdded.cshtml");
                 var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
                 var config = new TemplateServiceConfiguration
                 {
                     TemplateManager = templateManager
                 };
                 Engine.Razor = RazorEngineService.Create(config);
-                var html = Engine.Razor.RunCompile(ppp, null, model);
-                Mailing.SendMail("lukaszreplin@gmail.com", "TEST", html);
+                var html = Engine.Razor.RunCompile(path, null, model);
+                Mailing.SendMail(ticket.Profile.Username, "TEST", html);
                 return RedirectToAction("Index");
             }
 
@@ -245,6 +245,24 @@ namespace HelpdeskSystem.Controllers
             ticket.StatusId = 3;
             ticket.ModifiedDate = DateTime.Now;
             db.SaveChanges();
+            var model = new StatusChanged
+            {
+                Firstname = ticket.Profile.Firstname,
+                ModifiedDate = ticket.ModifiedDate,
+                Number = ticket.Id,
+                SiteUrl = Request.Url.GetLeftPart(UriPartial.Authority),
+                Status = ticket.Status.Name,
+                TicketUrl = Request.Url.GetLeftPart(UriPartial.Authority) + "/Tickets/Details/" + ticket.Id
+            };
+            var path = HttpContext.Server.MapPath("~/Views/Mail/StatusChanged.cshtml");
+            var templateManager = new ResolvePathTemplateManager(new string[] { "~/Views/Mail/" });
+            var config = new TemplateServiceConfiguration
+            {
+                TemplateManager = templateManager
+            };
+            Engine.Razor = RazorEngineService.Create(config);
+            var html = Engine.Razor.RunCompile(path, null, model);
+            Mailing.SendMail(ticket.Profile.Username, "Zmiana statusu zgłoszenia", html);
             return RedirectToAction("Details", new { id = id });
         }
 

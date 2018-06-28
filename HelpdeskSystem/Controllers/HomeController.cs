@@ -24,19 +24,10 @@ namespace HelpdeskSystem.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "Statystyki.";
-            using (var db = new HelpdeskContext())
-            {
-                IQueryable<CreatedDateGroup> data = from ticket in db.Tickets
-                                                    group ticket by DbFunctions.TruncateTime(ticket.CreatedDate)
-                    into dateGroup
-                                                    select new CreatedDateGroup()
-                                                    {
-                                                        CreatedDate = dateGroup.Key,
-                                                        TicketCount = dateGroup.Count()
-                                                    };
-                return View(data.ToList());
-            }
+            ViewBag.Message = "O aplikacji.";
+
+            return View();
+
         }
 
         public ActionResult Contact()

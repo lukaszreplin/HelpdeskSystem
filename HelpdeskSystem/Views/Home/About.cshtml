@@ -1,31 +1,8 @@
-﻿@model IEnumerable<HelpdeskSystem.Models.CreatedDateGroup>
+﻿
 @{
     ViewBag.Title = "O programie";
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<table class="table table-condensed">
-    <thead>
-        <tr>
-            <th>
-                Data utworzenia
-            </th>
-            <th>
-                Zgłoszenia
-            </th>
-        </tr>
-    </thead>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @item.TicketCount
-            </td>
-        </tr>
-    }
-</table>

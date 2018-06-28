@@ -26,12 +26,15 @@ namespace HelpdeskSystem.Models
 
         [Required]
         [DisplayName("Rola w systemie")]
-        public string RoleName { get; set; }
+        public int RoleId { get; set; }
 
         [DisplayName("Data utworzenia")]
         public DateTime RegisteredDate { get; set; }
 
+
+        public virtual Role Role { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Ticket> OperatedTickets { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
     }
 }

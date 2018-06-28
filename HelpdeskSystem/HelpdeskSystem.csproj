@@ -48,6 +48,15 @@
     <IncludeIisSettings>false</IncludeIisSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="IronPdf, Version=4.4.9.15720, Culture=neutral, PublicKeyToken=94e1c31412563c75, processorArchitecture=MSIL">
+      <HintPath>..\packages\IronPdf.4.4.9\lib\net40\IronPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -60,6 +69,9 @@
     </Reference>
     <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -206,10 +218,15 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminStatisticsController.cs" />
+    <Compile Include="Controllers\ClientStatisticsController.cs" />
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProfilesController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\StaffStatisticsController.cs" />
     <Compile Include="Controllers\TicketsController.cs" />
     <Compile Include="DataAccess\HelpdeskContext.cs" />
     <Compile Include="DataAccess\HelpdeskInitializer.cs" />
@@ -221,32 +238,47 @@
     <Compile Include="MailModels\TicketAddedModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Comment.cs" />
-    <Compile Include="Models\CreatedDateGroup.cs" />
+    <Compile Include="Models\MyTicketsViewModel.cs" />
+    <Compile Include="Models\ReportsModels\MonthViewModel.cs" />
+    <Compile Include="Models\ReportsModels\TopOperViewModel.cs" />
+    <Compile Include="Models\ReportsViewModel.cs" />
+    <Compile Include="Models\SettingsViewModel.cs" />
+    <Compile Include="Models\StaffBasicStatisticsViewModel.cs" />
+    <Compile Include="Models\TicketsByDateViewModel.cs" />
+    <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\Ticket.cs" />
+    <Compile Include="Models\TicketsByStatusViewModel.cs" />
+    <Compile Include="Models\TicketsBySupportViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utils\Mailing.cs" />
-    <Compile Include="Utils\RoleTranslate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Gallery.css" />
+    <Content Include="Scripts\Gallery.js" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Resources\reverse.png" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="App_Browsers\qt.browser" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -306,6 +338,15 @@
     <Content Include="Views\Profiles\Index.cshtml" />
     <Content Include="Views\Mail\SetPassword.cshtml" />
     <Content Include="Views\Mail\StatusChanged.cshtml" />
+    <Content Include="Views\AdminStatistics\TicketsByDate.cshtml" />
+    <Content Include="Views\AdminStatistics\TicketsBySupport.cshtml" />
+    <Content Include="Views\AdminStatistics\TicketsByStatus.cshtml" />
+    <Content Include="Views\ClientStatistics\MyTickets.cshtml" />
+    <Content Include="Views\StaffStatistics\StaffBasicStatistics.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Reports\TopOper.cshtml" />
+    <Content Include="Views\Reports\Month.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

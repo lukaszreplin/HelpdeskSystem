@@ -6,6 +6,17 @@
     ViewBag.Title = "Details";
 }
 
+<div id="imgModal" class="modal">
+
+
+    <span id="x" class="close">&times;</span>
+
+
+    <img class="modal-content" id="img01">
+
+
+    <div id="caption"></div>
+</div>
 <h3>Zgłoszenie nr @Model.Id - szczegóły</h3>
 
 <h5><b>Dodane przez</b> @Model.Profile.Firstname @Model.Profile.Lastname - @Model.CreatedDate</h5>
@@ -45,10 +56,10 @@
 </blockquote>
 @if (Model.Attachment != null)
 {
-    <button data-toggle="collapse" data-target="#attachment">Pokaż / ukryj załącznik</button>
+    <button class="btn btn-warning" data-toggle="collapse" data-target="#attachment">Pokaż / ukryj załącznik</button>
 
-    <div id="attachment" class="collapse">
-        <img src="~/Attachments/@Model.Attachment" alt="" height="100px" width="100px" />
+    <div id="attachment" class="collapse" style="margin: 20px">
+        <img id="attachmentImg" src="~/Attachments/@Model.Attachment" alt="Załącznik do zgłoszenia" height="150px" width="150px" />
     </div>
 }
 <h4>
@@ -92,15 +103,16 @@ else
     <button class="btn btn-primary" data-toggle="collapse" data-target="#commentForm">Dodaj komentarz</button>
     Html.RenderAction("Create", "Comment", new { ticketId = Model.Id });
 }
-
+@Styles.Render("~/Content/Gallery.css")
+@Scripts.Render("~/Scripts/Gallery.js")
 
 
 <p>
     @if (User.IsInRole("Admin"))
     {
-        @Html.ActionLink("Edytuj", "Edit", new {id = Model.Id})<text> | </text>
+        @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id })<text> | </text>
     }
-    
+
     @Html.ActionLink("Powrót do listy", "Index")
 </p>
 
