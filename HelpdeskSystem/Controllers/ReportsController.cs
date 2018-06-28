@@ -65,17 +65,7 @@ namespace HelpdeskSystem.Controllers
             return View(topOpers.ToList());
         }
 
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult TopOper(string report)
-        {
-            using (MemoryStream stream = new MemoryStream())
-            {
-                HtmlToPdf HtmlToPdf = new HtmlToPdf();
-                var PDF = HtmlToPdf.RenderHtmlAsPdf(report);
-                return File(PDF.BinaryData, "application/pdf", $"Raport_Operatorzy_{DateTime.Now}.pdf");
-            }
-        }
+
 
         public ActionResult Month()
         {
@@ -117,6 +107,18 @@ namespace HelpdeskSystem.Controllers
             viewModel.LastnameClientWithMostTickets = ClientWithMostTickets.Lastname;
             viewModel.TicketsOfClientWithMostTickets = ClientWithMostTickets.Count;
             return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult ToPdf(string report)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                HtmlToPdf HtmlToPdf = new HtmlToPdf();
+                var PDF = HtmlToPdf.RenderHtmlAsPdf(report);
+                return File(PDF.BinaryData, "application/pdf", $"Raport_{DateTime.Now}.pdf");
+            }
         }
     }
 }

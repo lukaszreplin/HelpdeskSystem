@@ -63,7 +63,15 @@
     <button class="btn btn-warning" data-toggle="collapse" data-target="#attachment">Pokaż / ukryj załącznik</button>
 
     <div id="attachment" class="collapse" style="margin: 20px">
-        <img id="attachmentImg" src="~/Attachments/@Model.Attachment" alt="Załącznik do zgłoszenia" height="150px" width="150px" />
+        @if (ViewBag.AttType == 1)
+        {
+            <img id="attachmentImg" src="~/Attachments/@Model.Attachment" alt="Załącznik do zgłoszenia" height="150px" width="150px"/>
+        }
+        @if (ViewBag.AttType == 2)
+        {
+            <a href="~/Attachments/@Model.Attachment">Pobierz załącznik (@Model.Attachment)</a>
+        }
+        
     </div>
 }
 <h4>

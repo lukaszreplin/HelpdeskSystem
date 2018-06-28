@@ -157,20 +157,21 @@ namespace HelpdeskSystem.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
 
                 var result = await UserManager.CreateAsync(user, model.Password);
-                UserManager.AddToRole(user.Id, "Client");
-                var context = new HelpdeskContext();
 
-                context.Profiles.Add(new Profile
-                {
-                    Firstname = model.Firstname,
-                    Lastname = model.Lastname,
-                    RegisteredDate = DateTime.Now,
-                    RoleId = 3,
-                    Username = model.Email
-                });
-                context.SaveChanges();
                 if (result.Succeeded)
                 {
+                    UserManager.AddToRole(user.Id, "Client");
+                    var context = new HelpdeskContext();
+
+                    context.Profiles.Add(new Profile
+                    {
+                        Firstname = model.Firstname,
+                        Lastname = model.Lastname,
+                        RegisteredDate = DateTime.Now,
+                        RoleId = 3,
+                        Username = model.Email
+                    });
+                    context.SaveChanges();
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771

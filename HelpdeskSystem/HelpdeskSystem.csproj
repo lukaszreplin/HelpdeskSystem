@@ -350,8 +350,7 @@
     <Content Include="Views\Reports\Month.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Attachments\" />
+    <Folder Include="App_Data\Attachments\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

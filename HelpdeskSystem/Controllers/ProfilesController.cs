@@ -22,18 +22,20 @@ using RazorEngine.Templating;
 
 namespace HelpdeskSystem.Controllers
 {
-    [Authorize(Roles = "Admin")]
+
     public class ProfilesController : Controller
     {
         private HelpdeskContext db = new HelpdeskContext();
 
         // GET: Profiles
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View(db.Profiles.ToList());
         }
 
         // GET: Profiles/Details/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -175,6 +177,10 @@ namespace HelpdeskSystem.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Profile profile = db.Profiles.Find(id);
+            if (profile.Tickets.Any() || profile.Comments.Any())
+            {
+                throw new Exception("Usuwany profil posiada zależności! Nie można go usunąć tak łatwo!");
+            }
             var userManager = HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var user = userManager.FindByName(profile.Username);
             var logins = user.Logins;
@@ -200,7 +206,7 @@ namespace HelpdeskSystem.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize]
+
         public ContentResult GetFirstnameAndLastname(string email)
         {
             var profile = db.Profiles.FirstOrDefault(p => p.Username == email);

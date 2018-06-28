@@ -109,6 +109,19 @@ namespace HelpdeskSystem.Controllers
                 ticket.Comments = tmpComments;
             }
 
+            if (ticket.Attachment != null)
+            {
+                var fileType = ticket.Attachment.Substring(ticket.Attachment.LastIndexOf('.') + 1);
+                if (fileType.Equals("jpg") || fileType.Equals("jpeg") || fileType.Equals("png") || fileType.Equals("bmp"))
+                {
+                    ViewBag.AttType = 1;
+                }
+                else
+                {
+                    ViewBag.AttType = 2;
+                }
+            }
+
 
             if (ticket == null)
             {
@@ -140,6 +153,8 @@ namespace HelpdeskSystem.Controllers
                 if (file != null && file.ContentLength > 0)
                 {
                     ticket.Attachment = Guid.NewGuid() + file.FileName;
+                    if (!Directory.Exists(Server.MapPath("~/Attachments")))
+                        Directory.CreateDirectory(Server.MapPath("~/Attachments"));
                     file.SaveAs(HttpContext.Server.MapPath("~/Attachments/") + ticket.Attachment);
                 }
                 ticket.CreatedDate = DateTime.Now;
@@ -199,7 +214,7 @@ namespace HelpdeskSystem.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Subject,Content,CreatedDate,ModifiedDate,StatusId,ProfileId,OperatorId")] Ticket ticket)
+        public ActionResult Edit([Bind(Include = "Id,Subject,Content,CreatedDate,ModifiedDate,StatusId,ProfileId,OperatorId,Attachment")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
