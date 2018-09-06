@@ -58,8 +58,8 @@ namespace HelpdeskSystem.Controllers
                     Firstname = p.Firstname,
                     Lastname = p.Lastname,
                     Username = p.Username,
-                    ClosedCounter = p.Tickets.Count(t => t.StatusId == 3),
-                    TotalCounter = p.Tickets.Count
+                    ClosedCounter = p.OperatedTickets.Count(t => t.StatusId == 3),
+                    TotalCounter = p.OperatedTickets.Count
                 })
                 .OrderByDescending(to => to.ClosedCounter);
             return View(topOpers.ToList());
